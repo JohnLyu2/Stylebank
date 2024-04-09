@@ -6,7 +6,7 @@ from torch.nn.modules import Sequential
 import torchvision.models as models
 import args
 
-device = args.device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 vgg16 = models.vgg16(pretrained=True).features.to(device).eval()
 
 class ContentLoss(nn.Module):

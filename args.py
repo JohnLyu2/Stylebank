@@ -1,7 +1,7 @@
 import torch
 import os
 
-device = torch.device("cuda")
+# device = torch.device("cuda")
 
 batch_size = 4
 lr = 0.001
@@ -12,7 +12,7 @@ REG_WEIGHT = 1e-5
 
 continue_training = True
 
-CONTENT_IMG_DIR = 'coco'
+CONTENT_IMG_DIR = '/Users/zhengyanglumacmini/Desktop/Projects/Stylebank/caltech_101_training'
 STYLE_IMG_DIR = 'style_img'
 MODEL_WEIGHT_DIR = 'weights_test'
 BANK_WEIGHT_DIR = os.path.join(MODEL_WEIGHT_DIR, 'bank')
