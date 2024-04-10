@@ -93,7 +93,7 @@ class LossNetwork(nn.Module):
 		super(LossNetwork, self).__init__()
 		cnn = deepcopy(vgg16)
 		normalization = Normalization().to(device)
-		# just in order to have an iterable access to or list of content/syle
+		# just in order to have an iterable access to or list of content/style
 		# losses
 		content_losses = []
 		style_losses = []
