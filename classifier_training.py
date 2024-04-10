@@ -146,7 +146,7 @@ for epoch in range(NUM_EPOCHS):
     best_epoch = epoch
     best_net = copy.deepcopy(net) # deep copy the model
     # save the model
-    torch.save(best_net.state_dict(), args.CLASSIFIER_MODEL_PATH)
+    torch.save(best_net.state_dict(), args.CLASSIFIER_WEIGHT_PATH)
   
   # Step the scheduler
   scheduler.step() 
