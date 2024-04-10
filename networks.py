@@ -67,8 +67,8 @@ class Normalization(nn.Module):
 		# B is batch size. C is number of channels. H is height and W is width.
 		mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
 		std = torch.tensor([0.229, 0.224, 0.225]).to(device)
-		self.mean = mean.clone().detach().view(-1, 1, 1)
-		self.std = std.clone().detach().view(-1, 1, 1)
+		self.mean = mean.view(-1, 1, 1)
+		self.std = std.view(-1, 1, 1)
 
 	def forward(self, img):
 		# normalize img
@@ -239,3 +239,17 @@ class StyleBankNet(nn.Module):
 			z = torch.cat(new_z, dim=0)
 			# z = self.bank_net(z)
 		return self.decoder_net(z)
+	
+class ImageClassifer(nn.Module):
+	def __init__(self, num_classes):
+		super(ImageClassifer, self).__init__()
+		self.norm = Normalization().to(device)
+		self.vgg16 = models.vgg16(weights=models.VGG16_Weights.DEFAULT)
+		self.vgg16.classifier[6] = nn.Linear(4096, num_classes)
+		self.to(device)
+
+	def forward(self, x):
+		x = self.norm(x)
+		x = self.vgg16(x)
+		return x
+

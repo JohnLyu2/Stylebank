@@ -26,3 +26,7 @@ K = 1000
 MAX_ITERATION = 300 * K
 ADJUST_LR_ITER = 10 * K
 LOG_ITER = 1 * K
+
+CLASSIFIER_TRAINING_DIR = "/Users/zhengyanglumacmini/Desktop/Projects/Stylebank/101_ObjectCategories"
+CLASSIFIER_WEIGHT_DIR = "classifier_weights"
+CLASSIFIER_WEIGHT_PATH = os.path.join(CLASSIFIER_WEIGHT_DIR, 'classifier.pth')
