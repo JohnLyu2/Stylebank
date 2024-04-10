@@ -125,9 +125,9 @@ for epoch in range(NUM_EPOCHS):
 
     current_step += 1
 
-  # store loss and accuracy values
-  running_corrects_train += torch.sum(preds == labels.data).data.item() 
-  running_loss_train += loss.item() * images.size(0)
+    # store loss and accuracy values
+    running_corrects_train += torch.sum(preds == labels.data).data.item() 
+    running_loss_train += loss.item() * images.size(0)
   
   train_acc = running_corrects_train / float(len(train_dataset))
   train_loss = running_loss_train / float(len(train_dataset))
