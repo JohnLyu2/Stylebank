@@ -7,12 +7,12 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.datasets as datasets
 
-import args
+import args_cc_test as args
 import utils
 from networks import LossNetwork, StyleBankNet
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu"
 
 """
 Load Dataset
@@ -31,7 +31,8 @@ Define Model and Loss Network (vgg16)
 model = StyleBankNet(len(style_dataset)).to(device)
 
 if os.path.exists(args.MODEL_WEIGHT_PATH):
-    model.load_state_dict(torch.load(args.MODEL_WEIGHT_PATH))
+    model_state = torch.load(args.MODEL_WEIGHT_PATH, map_location=torch.device('cpu'))
+    model.load_state_dict(model_state)
 else:
     raise Exception('cannot find model weights')
 
