@@ -14,7 +14,7 @@ continue_training = True
 
 CONTENT_IMG_DIR = '/Users/zhengyanglumacmini/Desktop/Projects/Stylebank/caltech_101_training'
 STYLE_IMG_DIR = 'style_img'
-MODEL_WEIGHT_DIR = 'weights_test'
+MODEL_WEIGHT_DIR = 'weights_cc_test'
 BANK_WEIGHT_DIR = os.path.join(MODEL_WEIGHT_DIR, 'bank')
 BANK_WEIGHT_PATH = os.path.join(BANK_WEIGHT_DIR, '{}.pth')
 MODEL_WEIGHT_PATH = os.path.join(MODEL_WEIGHT_DIR, 'model.pth')

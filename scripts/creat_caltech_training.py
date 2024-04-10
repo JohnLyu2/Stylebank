@@ -20,7 +20,7 @@ for folder_name in os.listdir(source_dir):
         files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
         
         # Randomly select 10 images, or all if there are fewer than 10
-        selected_files = random.sample(files, min(10, len(files)))
+        selected_files = random.sample(files, min(9, len(files)))
         
         # Destination subfolder path
         dest_subfolder_path = os.path.join(dest_dir, folder_name)
@@ -33,6 +33,6 @@ for folder_name in os.listdir(source_dir):
         for file_name in selected_files:
             source_file_path = os.path.join(folder_path, file_name)
             dest_file_path = os.path.join(dest_subfolder_path, file_name)
-            shutil.move(source_file_path, dest_file_path)
+            shutil.copy(source_file_path, dest_file_path)
 
 print("Training set created successfully.")

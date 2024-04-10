@@ -7,7 +7,7 @@ import torchvision.models as models
 import args
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-vgg16 = models.vgg16(pretrained=True).features.to(device).eval()
+vgg16 = models.vgg16(weights=models.VGG16_Weights.DEFAULT).features.to(device).eval()
 
 class ContentLoss(nn.Module):
 
@@ -67,8 +67,8 @@ class Normalization(nn.Module):
 		# B is batch size. C is number of channels. H is height and W is width.
 		mean = torch.tensor([0.485, 0.456, 0.406]).to(device)
 		std = torch.tensor([0.229, 0.224, 0.225]).to(device)
-		self.mean = torch.tensor(mean).view(-1, 1, 1)
-		self.std = torch.tensor(std).view(-1, 1, 1)
+		self.mean = mean.clone().detach().view(-1, 1, 1)
+		self.std = std.clone().detach().view(-1, 1, 1)
 
 	def forward(self, img):
 		# normalize img
