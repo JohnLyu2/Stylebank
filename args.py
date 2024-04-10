@@ -12,7 +12,7 @@ REG_WEIGHT = 1e-5
 
 continue_training = True
 
-CONTENT_IMG_DIR = '/Users/zhengyanglumacmini/Desktop/Projects/Stylebank/caltech_101_training'
+CONTENT_IMG_DIR = 'caltech_101_training'
 STYLE_IMG_DIR = 'style_img'
 MODEL_WEIGHT_DIR = 'weights_cc_test'
 BANK_WEIGHT_DIR = os.path.join(MODEL_WEIGHT_DIR, 'bank')
@@ -27,6 +27,6 @@ MAX_ITERATION = 300 * K
 ADJUST_LR_ITER = 10 * K
 LOG_ITER = 1 * K
 
-CLASSIFIER_TRAINING_DIR = "/Users/zhengyanglumacmini/Desktop/Projects/Stylebank/101_ObjectCategories"
+CLASSIFIER_TRAINING_DIR = "101_ObjectCategories"
 CLASSIFIER_WEIGHT_DIR = "classifier_weights"
 CLASSIFIER_WEIGHT_PATH = os.path.join(CLASSIFIER_WEIGHT_DIR, 'classifier.pth')
