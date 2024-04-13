@@ -9,7 +9,7 @@ import torchvision.datasets as datasets
 
 import args_cc as args
 import utils
-from networks import LossNetwork, StyleBankNet
+from networks import LossNetwork, StyleBankNet, ImageClassifer
 
 """********Important*******"""
 args.continue_training = False # change to your setting
@@ -54,6 +54,17 @@ optimizer = optim.Adam(model.parameters(), lr=args.lr)
 optimizer_ae = optim.Adam(model.parameters(), lr=args.lr)
 loss_network = LossNetwork().to(device)
 
+# load classifer
+classifier = ImageClassifer(101)
+classifier_weight_path = 'classifier_weights/classifier.pth'
+if os.path.exists(classifier_weight_path):
+    model_state = torch.load(classifier_weight_path, map_location=device)
+    classifier.load_state_dict(model_state)
+else:
+    raise Exception('cannot find model weights')
+classifier.eval()
+for param in classifier.parameters():
+    param.requires_grad = False
 
 """
 Training
@@ -71,19 +82,23 @@ c_sum = 0 # sum of content loss
 l_sum = 0 # sum of style+content loss
 r_sum = 0 # sum of reconstruction loss
 tv_sum = 0 # sum of tv loss
+class_sum = 0 # sum of classification loss
+pred_correct = 0
+size = 0
 
 while global_step <= args.MAX_ITERATION:
     for i, data in enumerate(content_dataloader):
         global_step += 1
-        data = data[0].to(device)
-        batch_size = data.shape[0]
+        images = data[0].to(device)
+        labels = data[1].to(device)
+        batch_size = images.shape[0]
         if global_step % (args.T+1) != 0:
             style_id_idx += 1
             sid = utils.get_sid_batch(style_id_seg[style_id_idx % len(style_id_seg)], batch_size)
             
             optimizer.zero_grad()
-            output_image = model(data, sid)
-            content_score, style_score = loss_network(output_image, data, style_dataset[sid])
+            output_image = model(images, sid)
+            content_score, style_score = loss_network(output_image, images, style_dataset[sid])
             content_loss = args.CONTENT_WEIGHT * content_score
             style_loss = args.STYLE_WEIGHT * style_score
             
@@ -91,7 +106,13 @@ while global_step <= args.MAX_ITERATION:
             diff_j = torch.sum(torch.abs(output_image[:, :, 1:, :] - output_image[:, :, :-1, :]))
             tv_loss = args.REG_WEIGHT*(diff_i + diff_j)
             
-            total_loss = content_loss + style_loss + tv_loss
+            # classification loss
+            logits = classifier(output_image)
+            class_score = F.cross_entropy(logits, labels)
+            class_loss = args.CLASS_WEIGHT * class_score
+            preds = torch.argmax(logits, dim=1)
+
+            total_loss = content_loss + style_loss + tv_loss + class_loss
             total_loss.backward()
             optimizer.step()
 
@@ -99,11 +120,14 @@ while global_step <= args.MAX_ITERATION:
             s_sum += style_loss.item()
             c_sum += content_loss.item()
             tv_sum += tv_loss.item()
+            class_sum += class_loss.item()
+            pred_correct += torch.sum(preds == labels).item()
+            size += batch_size
 
         if global_step % (args.T+1) == 0:
             optimizer_ae.zero_grad()
-            output_image = model(data)
-            loss = F.mse_loss(output_image, data)
+            output_image = model(images)
+            loss = F.mse_loss(output_image, images)
             loss.backward()
             optimizer_ae.step()
             r_sum += loss.item()
@@ -112,12 +136,15 @@ while global_step <= args.MAX_ITERATION:
             print('.', end='')
             
         if global_step % args.LOG_ITER == 0:
-            print("gs: {} {} {:.6f} {:.6f} {:.6f} {:.6f} {:.6f}".format(global_step / args.K, time.strftime("%H:%M:%S"), l_sum / 666, c_sum / 666, s_sum / 666, tv_sum / 666, r_sum / 333))
+            print(f"gs: {global_step / args.K} {time.strftime('%H:%M:%S')} {l_sum / 666:.6f} {c_sum / 666:.6f} {s_sum / 666:.6f} {tv_sum / 666:.6f} {r_sum / 333:.6f} {class_sum / 666:.6f} acc: {pred_correct / size:.4f}")
             r_sum = 0
             s_sum = 0
             c_sum = 0
             l_sum = 0
             tv_sum = 0
+            class_sum = 0
+            pred_correct = 0
+            size = 0
             # save whole model (including stylebank)
             torch.save(model.state_dict(), args.MODEL_WEIGHT_PATH)
             # save seperate part

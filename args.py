@@ -9,12 +9,13 @@ T = 2
 CONTENT_WEIGHT = 1
 STYLE_WEIGHT = 1000000
 REG_WEIGHT = 1e-5
+CLASS_WEIGHT = 100
 
 continue_training = True
 
 CONTENT_IMG_DIR = 'caltech_101_training'
 STYLE_IMG_DIR = 'style_img'
-MODEL_WEIGHT_DIR = 'weights_cc_test'
+MODEL_WEIGHT_DIR = 'weights_try_0412'
 BANK_WEIGHT_DIR = os.path.join(MODEL_WEIGHT_DIR, 'bank')
 BANK_WEIGHT_PATH = os.path.join(BANK_WEIGHT_DIR, '{}.pth')
 MODEL_WEIGHT_PATH = os.path.join(MODEL_WEIGHT_DIR, 'model.pth')
