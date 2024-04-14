@@ -7,7 +7,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.datasets as datasets
 
-import args_cc as args
+import args
 import utils
 from networks import LossNetwork, StyleBankNet, ImageClassifer
 
